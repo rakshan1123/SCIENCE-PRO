@@ -1,0 +1,6 @@
+{
+  "name": "Science Pro – Class 10 CBSE",
+  "description": "Production-ready CBSE Class 10 NCERT Science learning platform with 13-chapter lessons, virtual Science Lab simulations, Gemini AI Tutor, 10-format quizzes, 80-mark board mocks, smart revision, and educator analytics.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
