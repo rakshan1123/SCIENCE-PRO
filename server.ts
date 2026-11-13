@@ -1092,9 +1092,29 @@ async function startServer() {
 
   if (process.env.NODE_ENV !== 'production') {
     const vite = await createViteServer({
-      server: { middlewareMode: true },
+      server: {
+        middlewareMode: true,
+        hmr: false,
+      },
       appType: 'spa',
     });
+
+    // When HMR is disabled, Vite 8 still serves /@vite/client with a WebSocket connect call
+    // that fails behind reverse proxies. Strip only the connect call while keeping CSS helpers intact.
+    app.get('/@vite/client', async (_req, res, next) => {
+      try {
+        const result = await vite.transformRequest('/@vite/client');
+        if (!result) return next();
+        const code = result.code.replace(
+          'transport.connect(createHMRHandler(handleMessage));',
+          '/* HMR disabled */'
+        );
+        res.type('application/javascript').send(code);
+      } catch (err) {
+        next(err);
+      }
+    });
+
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(__dirname, 'dist');
